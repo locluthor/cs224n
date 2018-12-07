@@ -6,6 +6,7 @@ import random
 from q1_softmax import softmax
 from q2_sigmoid import sigmoid, sigmoid_grad
 from q2_gradcheck import gradcheck_naive
+from  utils.layers_utils import *
 
 
 def forward_backward_prop(X, labels, params, dimensions):
@@ -29,7 +30,7 @@ def forward_backward_prop(X, labels, params, dimensions):
     ### Unpack network parameters (do not modify)
     ofs = 0
     Dx, H, Dy = (dimensions[0], dimensions[1], dimensions[2])
-
+    print(Dx, H, Dy, params.shape)
     W1 = np.reshape(params[ofs:ofs+ Dx * H], (Dx, H))
     ofs += Dx * H
     b1 = np.reshape(params[ofs:ofs + H], (1, H))
@@ -40,11 +41,20 @@ def forward_backward_prop(X, labels, params, dimensions):
 
     # Note: compute cost based on `sum` not `mean`.
     ### YOUR CODE HERE: forward propagation
-    raise NotImplementedError
+    H_1, af_cache_1 = affine_forward(X, W1, b1)
+    A_1, sigmoid_cache = sigmoid_forward(H_1)
+    H_2, af_cache_2 = affine_forward(A_1, W2, b2)
+    cost, ce_cache = cross_entropy_forward(H_2, labels)
+    
     ### END YOUR CODE
 
     ### YOUR CODE HERE: backward propagation
-    raise NotImplementedError
+    dH_2 = cross_entropy_backward(ce_cache)
+    dA_1, gradW2, gradb2 = affine_backward(dH_2, af_cache_2)
+    dH_1 = sigmoid_backward(dA_1, sigmoid_cache)
+    _, gradW1, gradb1 = affine_backward(dH_1, af_cache_1)
+    print(gradW1.shape, gradW2.shape)
+
     ### END YOUR CODE
 
     ### Stack gradients (do not modify)
@@ -65,7 +75,7 @@ def sanity_check():
     dimensions = [10, 5, 10]
     data = np.random.randn(N, dimensions[0])   # each row will be a datum
     labels = np.zeros((N, dimensions[2]))
-    for i in xrange(N):
+    for i in range(N):
         labels[i, random.randint(0,dimensions[2]-1)] = 1
 
     params = np.random.randn((dimensions[0] + 1) * dimensions[1] + (
