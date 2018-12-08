@@ -36,7 +36,7 @@ def affine_backward(dout, cache):
     n, o = W.shape
     dX = np.dot(dout, W.T)
     dW = np.dot(X.T, dout)
-    db = np.ones(shape=(1, o))
+    db = np.sum(dout, axis=0)
     
     return dX, dW, db
 

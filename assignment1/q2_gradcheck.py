@@ -22,10 +22,10 @@ def gradcheck_naive(f, x):
     it = np.nditer(x, flags=['multi_index'], op_flags=['readwrite'])
     while not it.finished:
         ix = it.multi_index
-
+        
         # Try modifying x[ix] with h defined above to compute numerical
         # gradients (numgrad).
-
+        
         # Use the centered difference of the gradient.
         # It has smaller asymptotic error than forward / backward difference
         # methods. If you are curious, check out here:
@@ -36,11 +36,19 @@ def gradcheck_naive(f, x):
         # to test cost functions with built in randomness later.
 
         ### YOUR CODE HERE:
-        fb, _ = f(x[ix]+h)
-        fa, _ = f(x[ix]-h)
+        cx = x[ix]
+        a  = cx - h
+        b  = cx + h
+        
+        x[ix] = b
+        fb, _ = f(x)
+        x[ix] = a
+        fa, _ = f(x)
+        x[ix] = cx
+
         numgrad = (fb - fa) / (2*h)
         ### END YOUR CODE
-
+#        print(numgrad.shape, grad.shape)
         # Compare gradients
         reldiff = abs(numgrad - grad[ix]) / max(1, abs(numgrad), abs(grad[ix]))
         if reldiff > 1e-5:

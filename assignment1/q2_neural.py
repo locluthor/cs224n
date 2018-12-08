@@ -30,7 +30,7 @@ def forward_backward_prop(X, labels, params, dimensions):
     ### Unpack network parameters (do not modify)
     ofs = 0
     Dx, H, Dy = (dimensions[0], dimensions[1], dimensions[2])
-    print(Dx, H, Dy, params.shape)
+
     W1 = np.reshape(params[ofs:ofs+ Dx * H], (Dx, H))
     ofs += Dx * H
     b1 = np.reshape(params[ofs:ofs + H], (1, H))
@@ -53,7 +53,6 @@ def forward_backward_prop(X, labels, params, dimensions):
     dA_1, gradW2, gradb2 = affine_backward(dH_2, af_cache_2)
     dH_1 = sigmoid_backward(dA_1, sigmoid_cache)
     _, gradW1, gradb1 = affine_backward(dH_1, af_cache_1)
-    print(gradW1.shape, gradW2.shape)
 
     ### END YOUR CODE
 
@@ -80,7 +79,7 @@ def sanity_check():
 
     params = np.random.randn((dimensions[0] + 1) * dimensions[1] + (
         dimensions[1] + 1) * dimensions[2], )
-
+    
     gradcheck_naive(lambda params:
         forward_backward_prop(data, labels, params, dimensions), params)
 
@@ -100,4 +99,4 @@ def your_sanity_checks():
 
 if __name__ == "__main__":
     sanity_check()
-    your_sanity_checks()
+#    your_sanity_checks()
