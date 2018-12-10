@@ -7,16 +7,19 @@ Created on Fri Dec  7 14:24:31 2018
 
 import numpy as np
 
-def affine_forward(X, W, b):
+def affine_forward(X, W, b=None):
     """
     Input : 
         X shape (m, n) : m number of example and n is the number of features
-        M shape (n, o) : o is the number of output in the next layer
+        W shape (n, o) : o is the number of output in the next layer
         b shape (o,)   : bias term
     Output:
         out shape (m, o) : output for next layer
         cache          : stuff needed for backward pass
     """
+    n, o = W.shape
+    if b is None:
+        b = np.zeros(shape=(o,))
     out = np.dot(X, W) + b
     cache = (X, W)
     
