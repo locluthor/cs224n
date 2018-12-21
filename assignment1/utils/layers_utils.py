@@ -130,3 +130,6 @@ def cross_entropy_backward(cache):
     
     return s - labels
             
+
+def neg_sampling_forward():
+    pass

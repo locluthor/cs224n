@@ -41,8 +41,10 @@ def gradcheck_naive(f, x):
         b  = cx + h
         
         x[ix] = b
+        random.setstate(rndstate)
         fb, _ = f(x)
         x[ix] = a
+        random.setstate(rndstate)
         fa, _ = f(x)
         x[ix] = cx
 
