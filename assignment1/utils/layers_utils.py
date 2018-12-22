@@ -7,6 +7,43 @@ Created on Fri Dec  7 14:24:31 2018
 
 import numpy as np
 
+def sigmoid(x):
+    """
+    Compute the sigmoid function for the input here.
+
+    Arguments:
+    x -- A scalar or numpy array.
+
+    Return:
+    s -- sigmoid(x)
+    """
+
+    ### YOUR CODE HERE
+    s = 1 / (1 + np.exp(-x))
+    ### END YOUR CODE
+
+    return s
+
+
+def sigmoid_grad(s):
+    """
+    Compute the gradient for the sigmoid function here. Note that
+    for this implementation, the input s should be the sigmoid
+    function value of your original input x.
+
+    Arguments:
+    s -- A scalar or numpy array.
+
+    Return:
+    ds -- Your computed gradient.
+    """
+
+    ### YOUR CODE HERE
+    ds = s - s*s
+    ### END YOUR CODE
+
+    return ds
+
 def affine_forward(X, W, b=None):
     """
     Input : 
@@ -131,5 +168,21 @@ def cross_entropy_backward(cache):
     return s - labels
             
 
-def neg_sampling_forward():
-    pass
+def neg_sampling_forward(X, indices):
+    """
+    """
+    sampling = np.zeros_like(X)
+    unique, counts = np.unique(indices, return_counts=True)
+    sampling[:,unique] = counts
+
+    S = sigmoid(X)
+    cost = np.sum(-np.log(S)*sampling)
+    cache = (S, sampling)
+
+    return cost, cache
+
+
+def neg_sampling_backward(cache):
+    
+    S, sampling = cache
+    return sampling*(S-1)

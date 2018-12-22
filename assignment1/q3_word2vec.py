@@ -105,7 +105,13 @@ def negSamplingCostAndGradient(predicted, target, outputVectors, dataset,
     indices.extend(getNegativeSamples(target, dataset, K))
 
     ### YOUR CODE HERE
-    raise NotImplementedError
+    y, af_cache = affine_forward(predicted, outputVectors.T)
+    cost, neg_sampling_cache = neg_sampling_forward(y, indices)
+    
+    dy = neg_sampling_backward(neg_sampling_cache)
+    dpred, doutput, _ = affine_backward(dy, af_cache)
+    gradPred = dpred
+    grad     = doutput.T    
     ### END YOUR CODE
 
     return cost, gradPred, grad
@@ -141,7 +147,7 @@ def skipgram(currentWord, C, contextWords, tokens, inputVectors, outputVectors,
 
     ### YOUR CODE HERE
     for word in contextWords:
-        ci, gradPredi, gradi = word2vecCostAndGradient(inputVectors[[tokens.get(currentWord)]], tokens.get(word), outputVectors, None)
+        ci, gradPredi, gradi = word2vecCostAndGradient(inputVectors[[tokens.get(currentWord)]], tokens.get(word), outputVectors, dataset)
         cost += ci
         gradIn[[tokens.get(currentWord)]] += gradPredi
         gradOut += gradi
@@ -226,9 +232,9 @@ def test_word2vec():
     gradcheck_naive(lambda vec: word2vec_sgd_wrapper(
         skipgram, dummy_tokens, vec, dataset, 5, softmaxCostAndGradient),
         dummy_vectors)
-#    gradcheck_naive(lambda vec: word2vec_sgd_wrapper(
-#        skipgram, dummy_tokens, vec, dataset, 5, negSamplingCostAndGradient),
-#        dummy_vectors)
+    gradcheck_naive(lambda vec: word2vec_sgd_wrapper(
+        skipgram, dummy_tokens, vec, dataset, 5, negSamplingCostAndGradient),
+        dummy_vectors)
 #    print ("\n==== Gradient check for CBOW      ====")
 #    gradcheck_naive(lambda vec: word2vec_sgd_wrapper(
 #        cbow, dummy_tokens, vec, dataset, 5, softmaxCostAndGradient),
