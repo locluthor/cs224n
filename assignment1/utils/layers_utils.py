@@ -168,21 +168,21 @@ def cross_entropy_backward(cache):
     return s - labels
             
 
-def neg_sampling_forward(X, indices):
+def neg_sampling_forward(X, counts):
     """
     """
-    sampling = np.zeros_like(X)
-    unique, counts = np.unique(indices, return_counts=True)
-    sampling[:,unique] = counts
+#    sampling = np.zeros_like(X)
+#    unique, counts = np.unique(indices, return_counts=True)
+#    sampling[:,unique] = counts
 
     S = sigmoid(X)
-    cost = np.sum(-np.log(S)*sampling)
-    cache = (S, sampling)
+    cost = np.sum(-np.log(S)*counts)
+    cache = (S, counts)
 
     return cost, cache
 
 
 def neg_sampling_backward(cache):
     
-    S, sampling = cache
-    return sampling*(S-1)
+    S, counts = cache
+    return counts*(S-1)

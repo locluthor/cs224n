@@ -103,15 +103,20 @@ def negSamplingCostAndGradient(predicted, target, outputVectors, dataset,
     # wish to match the autograder and receive points!
     indices = [target]
     indices.extend(getNegativeSamples(target, dataset, K))
-
+    
     ### YOUR CODE HERE
-    y, af_cache = affine_forward(predicted, outputVectors.T)
-    cost, neg_sampling_cache = neg_sampling_forward(y, indices)
+    unique, counts = np.unique(indices, return_counts=True)
+    neg_outputVectors = outputVectors[unique]
+
+    y, af_cache = affine_forward(predicted, neg_outputVectors.T)
+    cost, neg_sampling_cache = neg_sampling_forward(y, counts)
     
     dy = neg_sampling_backward(neg_sampling_cache)
     dpred, doutput, _ = affine_backward(dy, af_cache)
+    
     gradPred = dpred
-    grad     = doutput.T    
+    grad     = np.zeros_like(outputVectors)
+    grad[unique]     = doutput.T    
     ### END YOUR CODE
 
     return cost, gradPred, grad
