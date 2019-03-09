@@ -17,6 +17,10 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 
+def listlen(l):
+    return len(l)
+    
+
 def pad_sents(sents, pad_token):
     """ Pad list of sentences according to the longest sentence in the batch.
     @param sents (list[list[str]]): list of sentences, where each sentence
@@ -27,15 +31,15 @@ def pad_sents(sents, pad_token):
         each sentences in the batch now has equal length.
     """
     sents_padded = []
-
     ### YOUR CODE HERE (~6 Lines)
-    longest_sent_length = len(max(sents))
-    for sent in sents:
+    longest_sent_length = len(max(sents, key=listlen))
+    for idx, sent in enumerate(sents):
         current_sent_length = len(sent)
-        padding = [sents_padded] * (longest_sent_length - current_sent_length)
+        padding = [pad_token] * (longest_sent_length - current_sent_length)
         sent.extend(padding)
+    sents_padded = sents
     ### END YOUR CODE
-
+    
     return sents_padded
 
 
