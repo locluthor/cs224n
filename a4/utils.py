@@ -29,12 +29,14 @@ def pad_sents(sents, pad_token):
     sents_padded = []
 
     ### YOUR CODE HERE (~6 Lines)
-
-
+    longest_sent_length = len(max(sents))
+    for sent in sents:
+        current_sent_length = len(sent)
+        padding = [sents_padded] * (longest_sent_length - current_sent_length)
+        sent.extend(padding)
     ### END YOUR CODE
 
     return sents_padded
-
 
 
 def read_corpus(file_path, source):
