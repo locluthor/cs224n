@@ -86,8 +86,8 @@ class NMT(nn.Module):
         self.c_projection = nn.Linear(in_features=2*hidden_size,
                                       out_features=hidden_size,
                                       bias=False)
-        self.att_projection = nn.Linear(in_features=hidden_size,
-                                        out_features=2*hidden_size,
+        self.att_projection = nn.Linear(in_features=2*hidden_size,
+                                        out_features=hidden_size,
                                         bias=False)
         self.combined_output_projection = nn.Linear(in_features=3*hidden_size,
                                                     out_features=hidden_size,
@@ -183,7 +183,11 @@ class NMT(nn.Module):
         ###         https://pytorch.org/docs/stable/torch.html#torch.cat
         ###     Tensor Permute:
         ###         https://pytorch.org/docs/stable/tensors.html#torch.Tensor.permute
-
+        src_len, b = source_padded.size()
+        X = self.model_embeddings.source(source_padded)
+        packX = pack_padded_sequence(X, source_lengths)
+        enc_hiddens, (h, c) = self.encoder(packX)
+        enc_hiddens = pad_packed_sequence(enc_hiddens)
 
         ### END YOUR CODE
 
